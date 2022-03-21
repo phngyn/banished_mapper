@@ -1,5 +1,6 @@
-import pyautogui
 import time
+import pyautogui
+import pydirectinput
 
 def screen_bot():
 
@@ -24,15 +25,16 @@ def click_newgame():
     # ok_button = './marks/ok.jpg'
     # ok_loc = pyautogui.locateCenterOnScreen(ok_button)
     # print(ok_loc)
-    pyautogui.click(x=1650+25, y=570+30, clicks=2, interval=1, button='left')
-
+    pydirectinput.click(x=1650+25, y=570+30, clicks=2, interval=1, button='left')
+    pyautogui.press('p')
 
 def click_ok_newgame():
     # ok_button = './marks/ok.jpg'
     # ok_loc = pyautogui.locateCenterOnScreen(ok_button)
     # print(ok_loc)
     #  
-    pyautogui.click(x=1850+25, y=835+30, clicks=2, interval=1, button='left')
+    pydirectinput.click(x=1850+25, y=835+30, clicks=2, interval=1, button='left')
+    pyautogui.press('p')
 
 if __name__ == '__main__':
 
