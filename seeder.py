@@ -34,6 +34,7 @@ def process_maps(maps_dir, processed_dir, seed_mapping):
 
     for subdir, dirs, files in os.walk(maps_dir):
         # print(len(files))
+        # i = 1
         for file in files:
             filepath = subdir + os.sep + file
             img = cv2.imread(filepath)
@@ -41,7 +42,7 @@ def process_maps(maps_dir, processed_dir, seed_mapping):
             # Check if map or seed
             img_type = img[10 : 10 + 30, 10 : 10 + 50]
             img_text = pytesseract.image_to_string(img_type).strip()
-            # print(img_text)
+            print(img_text)
 
             # If 'Map' is read from crop, cut and save minimap section
             if img_text == "Map":
@@ -61,9 +62,10 @@ def process_maps(maps_dir, processed_dir, seed_mapping):
 
                 seed_concat = seed_img[620 : 620 + 450, 1635 : 1635 + 420]
                 concat_img = np.concatenate((crop_mm, seed_concat), axis=1)
-                new_filepath = processed_dir + os.sep + seed_text + ".jpg"
+                new_filepath = processed_dir + os.sep + seed_text + ".jpg" # + str(i)
                 print("Making:", filepath, seed_filepath, new_filepath)
                 cv2.imwrite(new_filepath, concat_img)
+                i += 1
 
     return None
 
@@ -79,7 +81,7 @@ def make_map_dict(map_dir):
 if __name__ == "__main__":
 
     test_dir = "./test"
-    map_dir = "./map"
+    map_dir = "./maps"
     proc_dir = "./proc"
 
     map_dict = make_map_dict(map_dir)
