@@ -42,7 +42,7 @@ def process_maps(maps_dir, processed_dir, seed_mapping):
             # Check if map or seed
             img_type = img[10 : 10 + 30, 10 : 10 + 50]
             img_text = pytesseract.image_to_string(img_type).strip()
-            print(img_text)
+            # print(img_text)
 
             # If 'Map' is read from crop, cut and save minimap section
             if img_text == "Map":
@@ -65,7 +65,7 @@ def process_maps(maps_dir, processed_dir, seed_mapping):
                 new_filepath = processed_dir + os.sep + seed_text + ".jpg" # + str(i)
                 print("Making:", filepath, seed_filepath, new_filepath)
                 cv2.imwrite(new_filepath, concat_img)
-                i += 1
+                # i += 1
 
     return None
 
