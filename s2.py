@@ -36,21 +36,24 @@ def process_maps(maps_dir, processed_dir, seed_mapping):
 
     for subdir, dirs, files in os.walk(maps_dir):
         for file in files:
-            filepath = subdir + os.sep + file
-            img = cv2.imread(filepath)
-            crop_mm = img[0 : 0 + 450, 0 : 0 + 420]
-            crop_mm = cv2.putText(
-                img=crop_mm,
-                text=seed_mapping[file],
-                org=(70, 35),
-                fontFace=cv2.FONT_HERSHEY_DUPLEX,
-                fontScale=0.8,
-                color=(255, 255, 0),
-                thickness=1,
-            )
-            new_filepath = processed_dir + os.sep + seed_mapping[file] + ".jpg"  #
-            print("Making:", filepath, new_filepath)
-            cv2.imwrite(new_filepath, crop_mm)
+            try:
+                filepath = subdir + os.sep + file
+                img = cv2.imread(filepath)
+                crop_mm = img[0 : 0 + 450, 0 : 0 + 420]
+                crop_mm = cv2.putText(
+                    img=crop_mm,
+                    text=str(seed_mapping[file]),
+                    org=(70, 35),
+                    fontFace=cv2.FONT_HERSHEY_DUPLEX,
+                    fontScale=0.8,
+                    color=(255, 255, 0),
+                    thickness=1,
+                )
+                new_filepath = processed_dir + os.sep + str(seed_mapping[file]) + ".jpg"  #
+                print("Making:", filepath, new_filepath)
+                cv2.imwrite(new_filepath, crop_mm)
+            except KeyError:
+                continue
 
     return None
 
@@ -68,7 +71,6 @@ def make_map_dict2(map_dir, start_seed):
     process = process[0 : len(process) - 1]
 
     process = dict(zip(process[1::2], process[::2]))
-
     for key in process.keys():
         process[key] = start_seed
         start_seed += 1
@@ -122,10 +124,9 @@ if __name__ == "__main__":
     map_dir2 = "./maps2"
     proc_dir = "./proc"
     ss_dir = (
-        r"C:\Program Files (x86)\Steam\userdata\86585210\760\remote\242920\screenshots"
+        r"'C:\Program Files (x86)\Steam\userdata\86585210\760\remote\242920\screenshots'"
     )
 
-    test = make_map_dict2(test_dir, 1)
-    print(test)
-    for key in test.keys():
-        print(key)
+    map_dict = make_map_dict2(map_dir, 256)
+    print(map_dict)
+    process_maps(map_dir,proc_dir,map_dict)
