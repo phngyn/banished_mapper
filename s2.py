@@ -10,7 +10,7 @@ import json
 import subprocess
 import pytesseract
 import numpy as np
-# import natsort
+import natsort
 
 pytesseract.pytesseract.tesseract_cmd = (
     r"C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
@@ -49,7 +49,9 @@ def process_maps(maps_dir, processed_dir, seed_mapping):
                     color=(255, 255, 0),
                     thickness=1,
                 )
-                new_filepath = processed_dir + os.sep + str(seed_mapping[file]) + ".jpg"  #
+                new_filepath = (
+                    processed_dir + os.sep + str(seed_mapping[file]) + ".jpg"
+                )  #
                 print("Making:", filepath, new_filepath)
                 cv2.imwrite(new_filepath, crop_mm)
             except KeyError:
@@ -64,6 +66,7 @@ def make_map_dict(map_dir):
     process = process[0 : len(process) - 1]
     process = dict(zip(process[::2], process[1::2]))
     return process
+
 
 def make_map_dict2(map_dir, start_seed):
     process = subprocess.run(f"ls {map_dir}", capture_output=True)
@@ -95,7 +98,9 @@ def concat_imgs_along_y(map_dir, processed_dir, units, map_list):
                 filepath = subdir + os.sep + file
                 img_new = cv2.imread(filepath)
                 img_final = np.concatenate((img_final, img_new), axis=1)
-        new_filepath = processed_dir + os.sep + img_list[0] + "_" + img_list[units-1] + ".jpg"
+        new_filepath = (
+            processed_dir + os.sep + img_list[0] + "_" + img_list[units - 1] + ".jpg"
+        )
         cv2.imwrite(new_filepath, img_final)
         del map_list[:units]
     return None
@@ -111,7 +116,14 @@ def concat_imgs_along_x(map_dir, processed_dir, units, map_list):
                 filepath = subdir + os.sep + file
                 img_new = cv2.imread(filepath)
                 img_final = np.concatenate((img_final, img_new), axis=0)
-        new_filepath = processed_dir + os.sep + img_list[0] + "_" + img_list[units-1] + ".jpg"
+        new_filepath = (
+            processed_dir
+            + os.sep
+            + img_list[0]
+            + "_"
+            + img_list[units - 1]
+            + ".jpg"
+        )
         cv2.imwrite(new_filepath, img_final)
         del map_list[:units]
     return None
@@ -119,14 +131,24 @@ def concat_imgs_along_x(map_dir, processed_dir, units, map_list):
 
 if __name__ == "__main__":
 
+    # Top seeds
+    #   100000075; 328  
+    #   100000121; 320
+    #   100000264; 328
+    
     test_dir = "./test"
     map_dir = "./maps"
     map_dir2 = "./maps2"
     proc_dir = "./proc"
-    ss_dir = (
-        r"'C:\Program Files (x86)\Steam\userdata\86585210\760\remote\242920\screenshots'"
-    )
+    map_1x1 = "./proc_final/1x1"
+    ss_dir = r"'C:\Program Files (x86)\Steam\userdata\86585210\760\remote\242920\screenshots'"
 
     map_dict = make_map_dict2(map_dir, 256)
     print(map_dict)
     process_maps(map_dir,proc_dir,map_dict)
+    map_list = natsort.natsorted(get_map_names(map_1x1))
+    map_list = map_list[0:800]
+    concat_imgs_along_y(map_1x1, map_dir2, 10, map_list)
+    map_list = natsort.natsorted(get_map_names(map_dir2))
+    print(map_list)
+    concat_imgs_along_x(map_dir2, proc_dir, 10, map_list)
